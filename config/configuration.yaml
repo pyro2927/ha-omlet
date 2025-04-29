@@ -1,0 +1,21 @@
+# Basic configuration for Home Assistant
+homeassistant:
+  name: Omlet Test Environment
+  latitude: 40.7128
+  longitude: -74.0060
+  elevation: 10
+  unit_system: metric
+  time_zone: America/New_York
+  packages: !include_dir_named packages
+
+# Enable debug logging
+logger:
+  default: info
+  logs:
+    custom_components.omlet: debug
+    homeassistant.helpers.update_coordinator: debug
+    homeassistant.helpers.entity: debug
+
+# # Enable the Omlet integration
+# omlet:
+#   # API key will be configured through the UI 
