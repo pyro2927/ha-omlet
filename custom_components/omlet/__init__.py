@@ -7,12 +7,14 @@ from datetime import timedelta
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers.device_registry import DeviceInfo
+from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 
 from .api import OmletAPI
 from .const import DOMAIN
 
-PLATFORMS: list[Platform] = [Platform.SENSOR, Platform.SWITCH]
+PLATFORMS: list[Platform] = [Platform.SENSOR, Platform.SWITCH, Platform.COVER]
 SCAN_INTERVAL = timedelta(seconds=30)
 
 _LOGGER = logging.getLogger(__name__)
@@ -34,6 +36,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Unload a config entry."""
     if unload_ok := await hass.config_entries.async_unload_platforms(entry, PLATFORMS):
+        coordinator = hass.data[DOMAIN][entry.entry_id]
+        await coordinator.api.close()
         hass.data[DOMAIN].pop(entry.entry_id)
 
     return unload_ok
@@ -54,33 +58,42 @@ class OmletDataUpdateCoordinator(DataUpdateCoordinator):
             update_interval=SCAN_INTERVAL,
         )
         self.api = api
+        self.devices = {}
+
+    def get_device_info(self, device_id: str) -> DeviceInfo:
+        """Get device info for a device."""
+        device_data = self.data.get(device_id, {})
+        return DeviceInfo(
+            identifiers={(DOMAIN, device_id)},
+            name=device_data.get("name", f"Omlet Device {device_id}"),
+            manufacturer="Omlet",
+            model="Smart Coop",
+            sw_version=device_data.get("state", {}).get("general", {}).get("firmwareVersion", "Unknown"),
+        )
 
     async def _async_update_data(self) -> dict:
         """Fetch data from Omlet."""
         try:
-            async with self.api as api:
-                devices = await api.get_devices()
-                device_data = {}
-                
-                for device in devices:
-                    device_id = device["deviceId"]
-                    # Use the device data directly from the /device endpoint
-                    device_data[device_id] = {
-                        "device_id": device_id,
-                        "name": device.get("name", f"Omlet Device {device_id}"),
-                        "connected": True,  # Assume connected if we got data
-                        "battery_level": device.get("state", {}).get("general", {}).get("batteryLevel"),
-                        "door_state": device.get("state", {}).get("door", {}).get("state"),
-                        "light_state": device.get("state", {}).get("light", {}).get("state"),
-                        "temperature": device.get("state", {}).get("general", {}).get("temperature"),
-                        "humidity": device.get("state", {}).get("general", {}).get("humidity"),
-                        "light_level": device.get("state", {}).get("door", {}).get("lightLevel"),
-                        "last_update": device.get("state", {}).get("general", {}).get("firmwareLastCheck"),
-                        "configuration": device.get("configuration", {}),
-                        "state": device.get("state", {})
-                    }
-                
-                return device_data
+            devices = await self.api.get_devices()
+            device_data = {}
+            
+            for device in devices:
+                device_id = device["deviceId"]
+                # Use the device data directly from the /device endpoint
+                device_data[device_id] = {
+                    "device_id": device_id,
+                    "name": device.get("name", f"Omlet Device {device_id}"),
+                    "connected": True,  # Assume connected if we got data
+                    "battery_level": device.get("state", {}).get("general", {}).get("batteryLevel"),
+                    "door_state": device.get("state", {}).get("door", {}).get("state"),
+                    "light_state": device.get("state", {}).get("light", {}).get("state"),
+                    "light_level": device.get("state", {}).get("door", {}).get("lightLevel"),
+                    "last_update": device.get("state", {}).get("general", {}).get("firmwareLastCheck"),
+                    "configuration": device.get("configuration", {}),
+                    "state": device.get("state", {})
+                }
+            
+            return device_data
         except Exception as err:
             _LOGGER.error("Error fetching Omlet data: %s", err)
             raise

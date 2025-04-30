@@ -20,24 +20,23 @@ class OmletAPI:
         self._session: aiohttp.ClientSession | None = None
         self._timeout = ClientTimeout(total=10)
 
-    async def __aenter__(self) -> OmletAPI:
-        """Enter async context."""
-        self._session = aiohttp.ClientSession(
-            headers={"Authorization": f"Bearer {self._api_key}"},
-            timeout=self._timeout,
-        )
-        return self
+    async def ensure_session(self) -> None:
+        """Ensure the session is initialized."""
+        if self._session is None or self._session.closed:
+            self._session = aiohttp.ClientSession(
+                headers={"Authorization": f"Bearer {self._api_key}"},
+                timeout=self._timeout,
+            )
 
-    async def __aexit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
-        """Exit async context."""
-        if self._session:
+    async def close(self) -> None:
+        """Close the session."""
+        if self._session and not self._session.closed:
             await self._session.close()
             self._session = None
 
     async def get_devices(self) -> list[dict]:
         """Get all devices with their state and configuration."""
-        if not self._session:
-            raise RuntimeError("Session not initialized")
+        await self.ensure_session()
         
         async with self._session.get(f"{API_BASE_URL}{API_ENDPOINTS['devices']}") as response:
             response.raise_for_status()
@@ -45,8 +44,7 @@ class OmletAPI:
 
     async def get_device(self, device_id: str) -> dict:
         """Get device details."""
-        if not self._session:
-            raise RuntimeError("Session not initialized")
+        await self.ensure_session()
         
         async with self._session.get(
             f"{API_BASE_URL}{API_ENDPOINTS['device'].format(device_id=device_id)}"
@@ -56,8 +54,7 @@ class OmletAPI:
 
     async def get_device_config(self, device_id: str) -> dict:
         """Get device configuration."""
-        if not self._session:
-            raise RuntimeError("Session not initialized")
+        await self.ensure_session()
         
         async with self._session.get(
             f"{API_BASE_URL}{API_ENDPOINTS['device_config'].format(device_id=device_id)}"
@@ -67,11 +64,12 @@ class OmletAPI:
 
     async def perform_action(self, device_id: str, action: str) -> dict:
         """Perform an action on the device."""
-        if not self._session:
-            raise RuntimeError("Session not initialized")
+        await self.ensure_session()
         
         async with self._session.post(
             f"{API_BASE_URL}{API_ENDPOINTS['device_action'].format(device_id=device_id, action=action)}"
         ) as response:
             response.raise_for_status()
-            return await response.json() 
+            if response.status == 204:
+                return {}
+            return await response.json()

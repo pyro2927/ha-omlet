@@ -21,12 +21,9 @@ from homeassistant.helpers.update_coordinator import (
 from .const import (
     ATTR_BATTERY_LEVEL,
     ATTR_CONNECTED,
-    ATTR_DOOR_STATE,
-    ATTR_HUMIDITY,
     ATTR_LAST_UPDATE,
     ATTR_LIGHT_LEVEL,
     ATTR_LIGHT_STATE,
-    ATTR_TEMPERATURE,
     DOMAIN,
 )
 
@@ -45,9 +42,6 @@ async def async_setup_entry(
     for device_id, device_data in coordinator.data.items():
         entities.extend([
             OmletBatterySensor(coordinator, device_id),
-            OmletTemperatureSensor(coordinator, device_id),
-            OmletHumiditySensor(coordinator, device_id),
-            OmletDoorStateSensor(coordinator, device_id),
             OmletLightStateSensor(coordinator, device_id),
             OmletLightLevelSensor(coordinator, device_id),
         ])
@@ -63,6 +57,7 @@ class OmletSensor(CoordinatorEntity, SensorEntity):
         self._device_id = device_id
         self._attr_has_entity_name = True
         self._attr_native_value = None
+        self._attr_device_info = coordinator.get_device_info(device_id)
 
     @property
     def available(self) -> bool:
@@ -86,44 +81,6 @@ class OmletBatterySensor(OmletSensor):
     def native_value(self) -> StateType:
         """Return the state of the sensor."""
         return self.coordinator.data[self._device_id].get(ATTR_BATTERY_LEVEL)
-
-class OmletTemperatureSensor(OmletSensor):
-    """Representation of an Omlet temperature sensor."""
-
-    _attr_name = "Temperature"
-    _attr_device_class = SensorDeviceClass.TEMPERATURE
-    _attr_native_unit_of_measurement = "°C"
-    _attr_state_class = SensorStateClass.MEASUREMENT
-
-    @property
-    def native_value(self) -> StateType:
-        """Return the state of the sensor."""
-        return self.coordinator.data[self._device_id].get(ATTR_TEMPERATURE)
-
-class OmletHumiditySensor(OmletSensor):
-    """Representation of an Omlet humidity sensor."""
-
-    _attr_name = "Humidity"
-    _attr_device_class = SensorDeviceClass.HUMIDITY
-    _attr_native_unit_of_measurement = "%"
-    _attr_state_class = SensorStateClass.MEASUREMENT
-
-    @property
-    def native_value(self) -> StateType:
-        """Return the state of the sensor."""
-        return self.coordinator.data[self._device_id].get(ATTR_HUMIDITY)
-
-class OmletDoorStateSensor(OmletSensor):
-    """Representation of an Omlet door state sensor."""
-
-    _attr_name = "Door State"
-    _attr_device_class = SensorDeviceClass.ENUM
-    _attr_options = ["open", "closed", "opening", "closing"]
-
-    @property
-    def native_value(self) -> StateType:
-        """Return the state of the sensor."""
-        return self.coordinator.data[self._device_id].get(ATTR_DOOR_STATE)
 
 class OmletLightStateSensor(OmletSensor):
     """Representation of an Omlet light state sensor."""
