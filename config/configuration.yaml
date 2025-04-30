@@ -16,6 +16,8 @@ logger:
     homeassistant.helpers.update_coordinator: debug
     homeassistant.helpers.entity: debug
 
+history:
+
 # # Enable the Omlet integration
 # omlet:
 #   # API key will be configured through the UI 

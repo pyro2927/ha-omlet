@@ -41,8 +41,8 @@ async def async_setup_entry(
     entities = []
     for device_id, device_data in coordinator.data.items():
         # Only create door switches for devices that have a door state
-        if ATTR_DOOR_STATE in device_data:
-            entities.append(OmletDoorSwitch(coordinator, device_id))
+        # if ATTR_DOOR_STATE in device_data:
+        #     entities.append(OmletDoorSwitch(coordinator, device_id))
         
         # Only create light switches for devices that have a light state
         if ATTR_LIGHT_STATE in device_data:

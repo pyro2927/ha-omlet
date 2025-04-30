@@ -14,8 +14,8 @@ API_ENDPOINTS = {
 # Device States
 DOOR_STATE_OPEN = "open"
 DOOR_STATE_CLOSED = "closed"
-DOOR_STATE_OPENING = "opening"
-DOOR_STATE_CLOSING = "closing"
+DOOR_STATE_OPENING = "onpending"
+DOOR_STATE_CLOSING = "closepending"
 
 # Device Actions
 ACTION_OPEN = "open"
