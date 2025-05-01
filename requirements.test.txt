@@ -1,0 +1,6 @@
+pytest
+pytest-asyncio
+pytest-cov
+pytest-mock
+homeassistant
+pytest-homeassistant-custom-component

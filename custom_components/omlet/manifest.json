@@ -2,10 +2,10 @@
   "domain": "omlet",
   "name": "Omlet Smart Coop",
   "version": "1.0.0",
-  "documentation": "https://github.com/yourusername/ha-omlet",
+  "documentation": "https://github.com/pyro2927/ha-omlet",
   "requirements": ["aiohttp>=3.8.0"],
   "dependencies": [],
-  "codeowners": ["@yourusername"],
+  "codeowners": ["@pyro2927"],
   "config_flow": true,
   "iot_class": "cloud_polling"
 }

@@ -63,6 +63,7 @@ class OmletSensor(CoordinatorEntity, SensorEntity):
         self._config_entry_id = config_entry_id
         self._attr_has_entity_name = True
         self._attr_native_value = None
+        self._available = True
 
     @property
     def device_info(self) -> DeviceInfo:
