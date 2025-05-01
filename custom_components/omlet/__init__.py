@@ -63,11 +63,10 @@ class OmletDataUpdateCoordinator(DataUpdateCoordinator):
         self.devices = {}
         self.config_entry_id = config_entry_id
 
-    def get_device_info(self, device_id: str, config_entry_id: str) -> DeviceInfo:
+    def get_device_info(self, device_id: str) -> DeviceInfo:
         """Get device info for a device."""
         device_data = self.data.get(device_id, {})
         return DeviceInfo(
-            config_entry_id=config_entry_id,
             identifiers={(DOMAIN, device_id)},
             name=device_data.get("name", f"Omlet Device {device_id}"),
             manufacturer="Omlet",

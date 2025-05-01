@@ -68,7 +68,7 @@ class OmletSensor(CoordinatorEntity, SensorEntity):
     @property
     def device_info(self) -> DeviceInfo:
         """Get the device info."""
-        return self.coordinator.get_device_info(self._device_id, self._config_entry_id)
+        return self.coordinator.get_device_info(self._device_id)
 
     @property
     def available(self) -> bool:
@@ -94,11 +94,17 @@ class OmletBatterySensor(OmletSensor):
     _attr_device_class = SensorDeviceClass.BATTERY
     _attr_native_unit_of_measurement = "%"
     _attr_state_class = SensorStateClass.MEASUREMENT
+    _attr_icon = "mdi:battery"
+
+    def __init__(self, coordinator: DataUpdateCoordinator, device_id: str, config_entry_id: str) -> None:
+        """Initialize the sensor."""
+        super().__init__(coordinator, device_id, config_entry_id)
+        self._attr_unique_id = f"{device_id}_battery"
 
     @property
     def native_value(self) -> StateType:
         """Return the state of the sensor."""
-        return self.device_data.get(ATTR_BATTERY_LEVEL)
+        return self.device_data.get("state", {}).get("general", {}).get("batteryLevel")
 
 class OmletLightStateSensor(OmletSensor):
     """Representation of an Omlet light state sensor."""
@@ -106,11 +112,17 @@ class OmletLightStateSensor(OmletSensor):
     _attr_name = "Light State"
     _attr_device_class = SensorDeviceClass.ENUM
     _attr_options = ["on", "off"]
+    _attr_icon = "mdi:lightbulb"
+
+    def __init__(self, coordinator: DataUpdateCoordinator, device_id: str, config_entry_id: str) -> None:
+        """Initialize the sensor."""
+        super().__init__(coordinator, device_id, config_entry_id)
+        self._attr_unique_id = f"{device_id}_light_state"
 
     @property
     def native_value(self) -> StateType:
         """Return the state of the sensor."""
-        return self.device_data.get(ATTR_LIGHT_STATE)
+        return self.device_data.get("state", {}).get("light", {}).get("state")
 
 class OmletLightLevelSensor(OmletSensor):
     """Representation of an Omlet light level sensor."""
@@ -119,17 +131,29 @@ class OmletLightLevelSensor(OmletSensor):
     _attr_device_class = SensorDeviceClass.ILLUMINANCE
     _attr_native_unit_of_measurement = "%"
     _attr_state_class = SensorStateClass.MEASUREMENT
+    _attr_icon = "mdi:brightness-6"
+
+    def __init__(self, coordinator: DataUpdateCoordinator, device_id: str, config_entry_id: str) -> None:
+        """Initialize the sensor."""
+        super().__init__(coordinator, device_id, config_entry_id)
+        self._attr_unique_id = f"{device_id}_light_level"
 
     @property
     def native_value(self) -> StateType:
         """Return the state of the sensor."""
-        return self.device_data.get(ATTR_LIGHT_LEVEL)
+        return self.device_data.get("state", {}).get("door", {}).get("lightLevel")
 
 class OmletLastOpenTimeSensor(OmletSensor):
     """Representation of an Omlet door last open time sensor."""
 
     _attr_name = "Last Open Time"
     _attr_device_class = SensorDeviceClass.TIMESTAMP
+    _attr_icon = "mdi:door-open"
+
+    def __init__(self, coordinator: DataUpdateCoordinator, device_id: str, config_entry_id: str) -> None:
+        """Initialize the sensor."""
+        super().__init__(coordinator, device_id, config_entry_id)
+        self._attr_unique_id = f"{device_id}_last_open_time"
 
     @property
     def native_value(self) -> StateType:
@@ -153,6 +177,12 @@ class OmletLastCloseTimeSensor(OmletSensor):
 
     _attr_name = "Last Close Time"
     _attr_device_class = SensorDeviceClass.TIMESTAMP
+    _attr_icon = "mdi:door-closed"
+
+    def __init__(self, coordinator: DataUpdateCoordinator, device_id: str, config_entry_id: str) -> None:
+        """Initialize the sensor."""
+        super().__init__(coordinator, device_id, config_entry_id)
+        self._attr_unique_id = f"{device_id}_last_close_time"
 
     @property
     def native_value(self) -> StateType:
