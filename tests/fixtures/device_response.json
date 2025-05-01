@@ -1,0 +1,164 @@
+[
+    {
+      "deviceId": "kyWNebOzK4Kh63gC",
+      "deviceSerial": "806599a6fd9c",
+      "deviceTypeId": 1,
+      "groupId": "1V1XkahSQPa6iDQo",
+      "name": "Erin's autodoor",
+      "deletePending": 0,
+      "lastConnected": "2025-04-30T03:17:37+00:00",
+      "nextConnection": "2025-04-30 03:27:37",
+      "overdueConnection": 0,
+      "batteryCount": 0,
+      "batteryWarned": 0,
+      "bleOnly": 0,
+      "mqttServerId": 1,
+      "state": {
+        "general": {
+          "firmwareVersionCurrent": "1.0.47-6870ee4d",
+          "firmwareLastCheck": "2025-04-29T21:06:24+00:00",
+          "batteryLevel": 94,
+          "powerSource": "internal",
+          "displayLine1": "                ",
+          "displayLine2": "                ",
+          "firmwareVersionPrevious": "1.0.8-51a6c839",
+          "uptime": 3397
+        },
+        "connectivity": {
+          "wifiStrength": -67,
+          "ssid": "Fall of Reach 2.4",
+          "connected": false
+        },
+        "door": {
+          "state": "closed",
+          "lastOpenTime": "2025-04-29T19:16:45+00:00",
+          "lastCloseTime": "2025-04-29T20:25:03+00:00",
+          "fault": "none",
+          "lightLevel": 18
+        },
+        "light": {
+          "state": "off"
+        }
+      },
+      "configuration": {
+        "light": {
+          "mode": "auto",
+          "minutesBeforeClose": 5,
+          "maxOnTime": 3,
+          "equipped": 1
+        },
+        "door": {
+          "openMode": "light",
+          "openDelay": 0,
+          "openTime": "06:30",
+          "closeMode": "light",
+          "closeDelay": 0,
+          "closeLightLevel": 30,
+          "closeTime": "19:00",
+          "openLightLevel": 40,
+          "doorType": "sliding",
+          "colour": "green"
+        },
+        "connectivity": {
+          "wifiState": "on"
+        },
+        "general": {
+          "datetime": "2025-04-29T22:17:34+00:00",
+          "timezone": "America/Chicago",
+          "updateFrequency": 86400,
+          "language": "en",
+          "stayAliveTime": 0,
+          "statusUpdatePeriod": 21600,
+          "pollFreq": 600,
+          "overnightSleepEnable": false,
+          "overnightSleepStart": "21:00",
+          "overnightSleepEnd": "07:00"
+        }
+      },
+      "deviceType": "Autodoor",
+      "actions": [
+        {
+          "actionName": "close",
+          "description": "Close Door",
+          "actionValue": "close",
+          "pendingValue": "closepending",
+          "callback": null,
+          "url": "/device/kyWNebOzK4Kh63gC/action/close"
+        },
+        {
+          "actionName": "detect",
+          "description": "Detect Coop Light",
+          "actionValue": "test",
+          "pendingValue": null,
+          "callback": null,
+          "url": "/device/kyWNebOzK4Kh63gC/action/detect"
+        },
+        {
+          "actionName": "factory_reset",
+          "description": "Factory Reset",
+          "actionValue": "factoryReset",
+          "pendingValue": null,
+          "callback": null,
+          "url": "/device/kyWNebOzK4Kh63gC/action/factory_reset"
+        },
+        {
+          "actionName": "firmware_update",
+          "description": "Check for Firmware Update",
+          "actionValue": "ota",
+          "pendingValue": null,
+          "callback": null,
+          "url": "/device/kyWNebOzK4Kh63gC/action/firmware_update"
+        },
+        {
+          "actionName": "off",
+          "description": "Light Off",
+          "actionValue": "off",
+          "pendingValue": "offpending",
+          "callback": null,
+          "url": "/device/kyWNebOzK4Kh63gC/action/off"
+        },
+        {
+          "actionName": "on",
+          "description": "Light On",
+          "actionValue": "on",
+          "pendingValue": "onpending",
+          "callback": null,
+          "url": "/device/kyWNebOzK4Kh63gC/action/on"
+        },
+        {
+          "actionName": "open",
+          "description": "Open Door",
+          "actionValue": "open",
+          "pendingValue": "openpending",
+          "callback": null,
+          "url": "/device/kyWNebOzK4Kh63gC/action/open"
+        },
+        {
+          "actionName": "restart",
+          "description": "Restart",
+          "actionValue": "restart",
+          "pendingValue": null,
+          "callback": null,
+          "url": "/device/kyWNebOzK4Kh63gC/action/restart"
+        },
+        {
+          "actionName": "setup_wifi",
+          "description": "Reset Wifi Credentials",
+          "actionValue": "setupWiFi",
+          "pendingValue": null,
+          "callback": null,
+          "url": "/device/kyWNebOzK4Kh63gC/action/setup_wifi"
+        },
+        {
+          "actionName": "stop",
+          "description": "Stop Door",
+          "actionValue": "stop",
+          "pendingValue": "stopping",
+          "callback": null,
+          "url": "/device/kyWNebOzK4Kh63gC/action/stop"
+        }
+      ],
+      "meta": [],
+      "metadata": []
+    }
+  ]
