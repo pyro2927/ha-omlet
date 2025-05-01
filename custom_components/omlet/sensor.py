@@ -44,11 +44,11 @@ async def async_setup_entry(
     entities = []
     for device_id, device_data in coordinator.data.items():
         entities.extend([
-            OmletBatterySensor(coordinator, device_id),
-            OmletLightStateSensor(coordinator, device_id),
-            OmletLightLevelSensor(coordinator, device_id),
-            OmletLastOpenTimeSensor(coordinator, device_id),
-            OmletLastCloseTimeSensor(coordinator, device_id),
+            OmletBatterySensor(coordinator, device_id, config_entry.entry_id),
+            OmletLightStateSensor(coordinator, device_id, config_entry.entry_id),
+            OmletLightLevelSensor(coordinator, device_id, config_entry.entry_id),
+            OmletLastOpenTimeSensor(coordinator, device_id, config_entry.entry_id),
+            OmletLastCloseTimeSensor(coordinator, device_id, config_entry.entry_id),
         ])
     
     async_add_entities(entities)
@@ -56,18 +56,18 @@ async def async_setup_entry(
 class OmletSensor(CoordinatorEntity, SensorEntity):
     """Base class for Omlet sensors."""
 
-    def __init__(self, coordinator: DataUpdateCoordinator, device_id: str) -> None:
+    def __init__(self, coordinator: DataUpdateCoordinator, device_id: str, config_entry_id: str) -> None:
         """Initialize the sensor."""
         super().__init__(coordinator)
         self._device_id = device_id
+        self._config_entry_id = config_entry_id
         self._attr_has_entity_name = True
         self._attr_native_value = None
-        #self._attr_device_info = coordinator.get_device_info(device_id)
 
     @property
     def device_info(self) -> DeviceInfo:
         """Get the device info."""
-        return self.coordinator.get_device_info(self._device_id)
+        return self.coordinator.get_device_info(self._device_id, self._config_entry_id)
 
     @property
     def available(self) -> bool:

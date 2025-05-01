@@ -7,6 +7,7 @@ from datetime import timedelta
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
@@ -24,7 +25,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     hass.data.setdefault(DOMAIN, {})
 
     api = OmletAPI(entry.data["api_key"])
-    coordinator = OmletDataUpdateCoordinator(hass, api)
+    coordinator = OmletDataUpdateCoordinator(hass, api, entry.entry_id)
     await coordinator.async_config_entry_first_refresh()
 
     hass.data[DOMAIN][entry.entry_id] = coordinator
@@ -49,6 +50,7 @@ class OmletDataUpdateCoordinator(DataUpdateCoordinator):
         self,
         hass: HomeAssistant,
         api: OmletAPI,
+        config_entry_id: str,
     ) -> None:
         """Initialize the data updater."""
         super().__init__(
@@ -59,11 +61,13 @@ class OmletDataUpdateCoordinator(DataUpdateCoordinator):
         )
         self.api = api
         self.devices = {}
+        self.config_entry_id = config_entry_id
 
-    def get_device_info(self, device_id: str) -> DeviceInfo:
+    def get_device_info(self, device_id: str, config_entry_id: str) -> DeviceInfo:
         """Get device info for a device."""
         device_data = self.data.get(device_id, {})
         return DeviceInfo(
+            config_entry_id=config_entry_id,
             identifiers={(DOMAIN, device_id)},
             name=device_data.get("name", f"Omlet Device {device_id}"),
             manufacturer="Omlet",
@@ -92,6 +96,15 @@ class OmletDataUpdateCoordinator(DataUpdateCoordinator):
                     "configuration": device.get("configuration", {}),
                     "state": device.get("state", {})
                 }
+                # make sure to register the device in the device registry
+                dr.async_get(self.hass).async_get_or_create(
+                    config_entry_id=self.config_entry_id,
+                    identifiers={(DOMAIN, device_id)},
+                    name=device.get("name", f"Omlet Device {device_id}"),
+                    manufacturer="Omlet",
+                    model="Smart Coop",
+                    sw_version=device.get("state", {}).get("general", {}).get("firmwareVersion", "Unknown")
+                )
             
             return device_data
         except Exception as err:
