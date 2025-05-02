@@ -162,12 +162,20 @@ class OmletLastOpenTimeSensor(OmletSensor):
         if not time_str:
             return None
         try:
-            # Parse the time string as UTC
-            dt = datetime.fromisoformat(time_str.replace("Z", "+00:00"))
-            # Get the timezone from the coordinator
+            # Parse the time string and get timezone from coordinator
             timezone = self.device_data.get("configuration", {}).get("general", {}).get("timezone")
-            # Convert to the specified timezone
-            return dt.replace(tzinfo=None).astimezone(dt_util.get_time_zone(timezone))
+            tz = dt_util.get_time_zone(timezone)
+            # Parse UTC time and create new datetime with local timezone
+            utc_dt = datetime.fromisoformat(time_str.replace("+00:00", ""))
+            return datetime(
+                year=utc_dt.year,
+                month=utc_dt.month,
+                day=utc_dt.day,
+                hour=utc_dt.hour,
+                minute=utc_dt.minute,
+                second=utc_dt.second,
+                tzinfo=tz
+            )
         except (ValueError, TypeError):
             _LOGGER.error("Invalid date format for lastOpenTime: %s", time_str)
             return None
@@ -191,12 +199,20 @@ class OmletLastCloseTimeSensor(OmletSensor):
         if not time_str:
             return None
         try:
-            # Parse the time string as UTC
-            dt = datetime.fromisoformat(time_str.replace("Z", "+00:00"))
-            # Get the timezone from the coordinator
+            # Parse the time string and get timezone from coordinator
             timezone = self.device_data.get("configuration", {}).get("general", {}).get("timezone")
-            # Convert to the specified timezone
-            return dt.replace(tzinfo=None).astimezone(dt_util.get_time_zone(timezone))
+            tz = dt_util.get_time_zone(timezone)
+            # Parse UTC time and create new datetime with local timezone
+            utc_dt = datetime.fromisoformat(time_str.replace("+00:00", ""))
+            return datetime(
+                year=utc_dt.year,
+                month=utc_dt.month,
+                day=utc_dt.day,
+                hour=utc_dt.hour,
+                minute=utc_dt.minute,
+                second=utc_dt.second,
+                tzinfo=tz
+            )
         except (ValueError, TypeError):
             _LOGGER.error("Invalid date format for lastCloseTime: %s", time_str)
             return None

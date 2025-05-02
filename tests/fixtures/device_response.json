@@ -64,7 +64,7 @@
       },
       "general": {
         "datetime": "2025-05-02T12:04:51+00:00",
-        "timezone": "America/Chicago",
+        "timezone": "America/New_York",
         "updateFrequency": 86400,
         "language": "en",
         "stayAliveTime": 0,
