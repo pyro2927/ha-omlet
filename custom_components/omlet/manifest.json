@@ -1,5 +1,5 @@
 {
-  "domain": "omlet",
+  "domain": "omlet_smart_coop",
   "name": "Omlet Smart Coop",
   "codeowners": ["@pyro2927"],
   "config_flow": true,

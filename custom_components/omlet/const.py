@@ -1,6 +1,6 @@
 """Constants for the Omlet integration."""
 
-DOMAIN = "omlet"
+DOMAIN = "omlet_smart_coop"
 
 # API Configuration
 API_BASE_URL = "https://x107.omlet.co.uk/api/v1"
