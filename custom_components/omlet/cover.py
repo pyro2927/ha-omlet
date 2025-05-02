@@ -111,6 +111,23 @@ class OmletCover(CoordinatorEntity, CoverEntity):
             return False
         return self.coordinator.data[self._device_id].get(ATTR_DOOR_STATE) in [DOOR_STATE_CLOSING]
 
+    @property
+    def extra_state_attributes(self) -> dict[str, Any]:
+        """Return the state attributes."""
+        door_config = self.device_data.get("configuration", {}).get("door", {})
+        return {
+            "open_mode": door_config.get("openMode"),
+            "open_delay": door_config.get("openDelay"),
+            "open_time": door_config.get("openTime"),
+            "close_mode": door_config.get("closeMode"),
+            "close_delay": door_config.get("closeDelay"),
+            "close_light_level": door_config.get("closeLightLevel"),
+            "close_time": door_config.get("closeTime"),
+            "open_light_level": door_config.get("openLightLevel"),
+            "door_type": door_config.get("doorType"),
+            "colour": door_config.get("colour"),
+        }
+
     async def async_open_cover(self, **kwargs: Any) -> None:
         """Open the door."""
         await self.coordinator.api.perform_action(
