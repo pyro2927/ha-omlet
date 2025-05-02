@@ -1,0 +1,6 @@
+{
+    "name": "Omlet Smart Coop",
+    "domains": ["sensor", "switch", "cover"],
+    "homeassistant": "2023.1.0",
+    "render_readme": true
+} 
