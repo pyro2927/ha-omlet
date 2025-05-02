@@ -46,7 +46,7 @@ async def async_setup_entry(
     for device_id, device_data in coordinator.data.items():
         # Only create door covers for devices that have a door state
         if ATTR_DOOR_STATE in device_data:
-            entities.append(OmletCover(coordinator, device_id))
+            entities.append(OmletCover(coordinator, device_id, config_entry.entry_id))
     
     async_add_entities(entities)
 
@@ -59,14 +59,14 @@ class OmletCover(CoordinatorEntity, CoverEntity):
     _attr_supported_features = (
         CoverEntityFeature.OPEN
         | CoverEntityFeature.CLOSE
-        | CoverEntityFeature.STOP
     )
 
-    def __init__(self, coordinator: DataUpdateCoordinator, device_id: str) -> None:
+    def __init__(self, coordinator: DataUpdateCoordinator, device_id: str, config_entry_id: str) -> None:
         """Initialize the cover."""
         super().__init__(coordinator)
         self._device_id = device_id
-        #self._attr_device_info = coordinator.get_device_info(device_id)
+        self._config_entry_id = config_entry_id
+        self._attr_unique_id = f"{device_id}_door"
 
     @property
     def device_info(self) -> DeviceInfo:
@@ -102,7 +102,7 @@ class OmletCover(CoordinatorEntity, CoverEntity):
         """Return if the cover is opening."""
         if not self.available:
             return False
-        return self.coordinator.data[self._device_id].get(ATTR_DOOR_STATE) in [DOOR_STATE_OPEN, DOOR_STATE_OPENING]
+        return self.coordinator.data[self._device_id].get(ATTR_DOOR_STATE) in [DOOR_STATE_OPENING]
 
     @property
     def is_closing(self) -> bool:
@@ -124,10 +124,3 @@ class OmletCover(CoordinatorEntity, CoverEntity):
             self._device_id, ACTION_CLOSE
         )
         await self.coordinator.async_request_refresh()
-
-    async def async_stop_cover(self, **kwargs: Any) -> None:
-        """Stop the door."""
-        await self.coordinator.api.perform_action(
-            self._device_id, ACTION_STOP
-        )
-        await self.coordinator.async_request_refresh() 
