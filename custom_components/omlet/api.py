@@ -20,6 +20,15 @@ class OmletAPI:
         self._session: aiohttp.ClientSession | None = None
         self._timeout = ClientTimeout(total=10)
 
+    async def __aenter__(self) -> OmletAPI:
+        """Enter the async context manager."""
+        await self.ensure_session()
+        return self
+
+    async def __aexit__(self, exc_type, exc_val, exc_tb) -> None:
+        """Exit the async context manager."""
+        await self.close()
+
     async def ensure_session(self) -> None:
         """Ensure the session is initialized."""
         if self._session is None or self._session.closed:

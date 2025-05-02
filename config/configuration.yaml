@@ -5,7 +5,7 @@ homeassistant:
   longitude: -74.0060
   elevation: 10
   unit_system: metric
-  time_zone: America/New_York
+  time_zone: America/Chicago
   packages: !include_dir_named packages
 
 # Enable debug logging

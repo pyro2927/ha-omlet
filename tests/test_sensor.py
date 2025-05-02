@@ -91,6 +91,8 @@ async def test_last_open_time_sensor(mock_coordinator, mock_hass):
     assert isinstance(sensor.native_value, datetime)
     # The time should be converted to the configured timezone
     assert sensor.native_value.tzinfo == dt_util.get_time_zone("America/Chicago")
+    assert sensor.native_value.strftime("%I:%M:%S%p").lower() == "06:28:57am"
+    
 
 @pytest.mark.asyncio
 async def test_last_close_time_sensor(mock_coordinator, mock_hass):
@@ -100,6 +102,7 @@ async def test_last_close_time_sensor(mock_coordinator, mock_hass):
     assert isinstance(sensor.native_value, datetime)
     # The time should be converted to the configured timezone
     assert sensor.native_value.tzinfo == dt_util.get_time_zone("America/Chicago")
+    assert sensor.native_value.strftime("%I:%M:%S%p").lower() == "07:59:57pm"
 
 # @pytest.mark.asyncio
 # async def test_coordinator_refresh(mock_coordinator, mock_hass):
